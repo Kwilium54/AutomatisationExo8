@@ -1,0 +1,75 @@
+{% extends "main.html.twig" %}
+
+{% block content %}
+    <div class="row">
+    <div class="columns md-8 md-center">
+        <div class="add-item add-form">
+            <form method="post" action="">
+                <input type="hidden" name="<?php echo $token; ?>">
+
+                <fieldset id="coordonnee">
+                    <legend>Vos coordonnées</legend>
+
+                    <label for="nom" class="nomLabel"></label>
+                    <input type="text" name="nom" id="nom" placeholder="Nom"/>
+
+                    <label for="email" class="emailLabel"></label>
+                    <input type="email" name="email" id="email" placeholder="Email"/>
+
+                    <label for="phone" class="phoneLabel"></label>
+                    <input type="text" name="phone" id="phone" placeholder="Téléphone"/>
+
+                    <label for="ville" class="villeLabel"></label>
+                    <input type="text" name="ville" id="ville" placeholder="Ville"/>
+
+                    <label for="departement" class="departementLabel"></label>
+                    <select name="departement">
+                        <option>Choississez un département</option>
+                        <option>-----</option>
+                        {% for d in departements %}
+                            <option value="{{ d.id_departement }}">{{ d.nom_departement }}</option>
+                        {% endfor %}
+                    </select>
+
+                </fieldset>
+
+                <fieldset>
+                    <legend>Votre annonce</legend>
+
+                    <label for="categorie" class="categorieLabel"></label>
+                    <select name="categorie" id="categorie">
+                        <option>Choississez une catégorie</option>
+                        <option>-----</option>
+                        {% for cat in categories %}
+                            <option value="{{ cat.id_categorie }}">{{ cat.nom_categorie }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <label for="title" class="titleLabel"></label>
+                    <input type="text" name="title" id="title" placeholder="Titre de l'annonce"/>
+
+                    <label for="description" class="descriptionLabel"></label>
+                    <textarea name="description" id="description" cols="40" rows="4" placeholder="Votre description…"></textarea>
+
+                    <label for="price" class="priceLabel"></label>
+                    <input type="text" name="price" id="price" placeholder="Prix"/>
+                </fieldset>
+                <fieldset>
+                    <legend>Sécurisez votre annonce</legend>
+
+                    <label for="password" class="passwordLabel"></label>
+                    <input type="password" name="psw" id="psw" placeholder="Mot de passe"/>
+                    <input type="password" name="confirm-psw" id="confirm-psw" placeholder="Confirmez le mot de passe"/>
+
+                </fieldset>
+                {#<div class="file-upload">#}
+                    {#<input type="hidden" name="MAX_FILE_SIZE" value="2097152"/>#}
+                    {#<input type="file" name="fichier" value=""/>#}
+                {#</div>#}
+                <div class="align-center" id="validate">
+                    <input type="submit" id="toggler" value="Déposer mon annonce"/>
+                </div>
+            </form>
+        </div>
+    </div>
+{% endblock %}
