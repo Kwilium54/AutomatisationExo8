@@ -7,11 +7,20 @@
         "ext-mysqli": "*",
         "ext-pdo": "*"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^11",
+        "guzzlehttp/guzzle": "^7"
+    },
     "autoload":{
         "psr-0":{
             "controller":"",
             "model":"",
             "db":""
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/"
         }
     },
     "config": {
