@@ -2,21 +2,21 @@
 
 namespace Tests\Unit;
 
-use controller\addItem;
+use App\Controller\AddItemController;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Tests unitaires de la validation d'email et de formulaire dans addItem.
+ * Tests unitaires de la validation d'email et de formulaire dans AddItemController.
  */
 class AddItemValidationTest extends TestCase
 {
-    private addItem $controller;
+    private AddItemController $controller;
     private \ReflectionMethod $isEmail;
 
     protected function setUp(): void
     {
-        $this->controller = new addItem();
-        $this->isEmail    = new \ReflectionMethod(addItem::class, 'isEmail');
+        $this->controller = new AddItemController();
+        $this->isEmail    = new \ReflectionMethod(AddItemController::class, 'isEmail');
     }
 
     // ────────────────────────────────────────────────────────────────────

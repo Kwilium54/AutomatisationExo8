@@ -1,13 +1,12 @@
 <?php
 
-namespace controller;
+namespace App\Controller;
 
-use model\Annonce;
-use model\Annonceur;
+use App\Model\Annonce;
+use App\Model\Annonceur;
 
-class addItem
+class AddItemController
 {
-
     function addItemView($twig, $menu, $chemin, $cat, $dpt)
     {
         $template = $twig->load("add.html.twig");
@@ -18,7 +17,6 @@ class addItem
                 "departements" => $dpt
             )
         );
-
     }
 
     private function isEmail($email)
@@ -28,13 +26,8 @@ class addItem
 
     function addNewItem($twig, $menu, $chemin, $allPostVars)
     {
-
         date_default_timezone_set('Europe/Paris');
 
-        /*
-        * On récupère tous les champs du formulaire en supprimant
-        * les caractères invisibles en début et fin de chaîne.
-        */
         $nom              = trim($_POST['nom']);
         $email            = trim($_POST['email']);
         $phone            = trim($_POST['phone']);
@@ -47,7 +40,6 @@ class addItem
         $password         = trim($_POST['psw']);
         $password_confirm = trim($_POST['confirm-psw']);
 
-        // Tableau d'erreurs personnalisées
         $errors                          = array();
         $errors['nameAdvertiser']        = '';
         $errors['emailAdvertiser']       = '';
@@ -60,7 +52,6 @@ class addItem
         $errors['priceAdvertiser']       = '';
         $errors['passwordAdvertiser']    = '';
 
-        // On teste que les champs ne soient pas vides et soient de bons types
         if (empty($nom)) {
             $errors['nameAdvertiser'] = 'Veuillez entrer votre nom';
         }
@@ -92,12 +83,9 @@ class addItem
             $errors['passwordAdvertiser'] = 'Les mots de passes ne sont pas identiques';
         }
 
-        // On vire les cases vides
         $errors = array_values(array_filter($errors));
 
-        // S'il y a des erreurs on redirige vers la page d'erreur
         if (!empty($errors)) {
-
             $template = $twig->load("add-error.html.twig");
             echo $template->render(array(
                     "breadcrumb" => $menu,
@@ -105,8 +93,7 @@ class addItem
                     "errors"     => $errors
                 )
             );
-        } // sinon on ajoute à la base et on redirige vers une page de succès
-        else {
+        } else {
             $annonce   = new Annonce();
             $annonceur = new Annonceur();
 
@@ -123,10 +110,8 @@ class addItem
             $annonce->id_categorie   = $allPostVars['categorie'];
             $annonce->date           = date('Y-m-d');
 
-
             $annonceur->save();
             $annonceur->annonce()->save($annonce);
-
 
             $template = $twig->load("add-confirm.html.twig");
             echo $template->render(array("breadcrumb" => $menu, "chemin" => $chemin));

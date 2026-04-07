@@ -1,12 +1,12 @@
 <?php
 
-namespace controller;
+namespace App\Controller;
 
-use model\Annonce;
-use model\Photo;
-use model\Annonceur;
+use App\Model\Annonce;
+use App\Model\Photo;
+use App\Model\Annonceur;
 
-class index
+class HomeController
 {
     protected $annonce = array();
 
