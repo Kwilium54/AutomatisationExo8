@@ -1,9 +1,11 @@
 <?php
 
 use App\Db\Connection;
-use Slim\App;
-use Slim\Http\Request;
-use Slim\Http\Response;
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Server\RequestHandlerInterface;
+use Slim\Factory\AppFactory;
+use Slim\Psr7\Response as SlimResponse;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 
@@ -11,30 +13,32 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 Connection::createConn();
 
-$app = new App([
-    'settings' => [
-        'displayErrorDetails' => true,
-    ],
-]);
+$app = AppFactory::create();
 
 $loader = new FilesystemLoader(__DIR__ . '/../template');
 $twig   = new Environment($loader);
 
-$app->add(function (Request $request, Response $response, $next) {
+// Middleware : suppression des trailing slashes (redirect 301 en GET, rewrite URI sinon)
+// Ajouté APRÈS addRoutingMiddleware pour s'exécuter AVANT le routage (LIFO Slim 4)
+$app->addRoutingMiddleware();
+
+$app->add(function (Request $request, RequestHandlerInterface $handler): Response {
     $uri  = $request->getUri();
     $path = $uri->getPath();
-    if ($path != '/' && str_ends_with($path, '/')) {
-        $uri = $uri->withPath(substr($path, 0, -1));
-        if ($request->getMethod() == 'GET') {
-            return $response->withRedirect((string)$uri, 301);
-        } else {
-            return $next($request->withUri($uri), $response);
+    if ($path !== '/' && str_ends_with($path, '/')) {
+        $uri = $uri->withPath(rtrim($path, '/'));
+        if ($request->getMethod() === 'GET') {
+            $response = new SlimResponse();
+            return $response->withStatus(301)->withHeader('Location', (string)$uri);
         }
+        $request = $request->withUri($uri);
     }
-    return $next($request, $response);
+    return $handler->handle($request);
 });
 
-if (!isset($_SESSION)) {
+$app->addErrorMiddleware(true, true, true);
+
+if (session_status() === PHP_SESSION_NONE) {
     session_start();
     $_SESSION['formStarted'] = true;
 }
